@@ -2,10 +2,10 @@ package leetCode75;
 
 public class canPlaceFlowers {
     public static void main(String[] args) {
-        System.out.println(canPlaceFlowers(new int[]{1, 0, 0, 0, 0, 1}, 2));
+        System.out.println(canPlaceFl(new int[]{1, 0, 0, 0, 0, 1}, 2));
     }
 
-    public static boolean canPlaceFlowers(int[] flowerbed, int n) {
+    public static boolean canPlaceFl(int[] flowerbed, int n) {
         int c = 0;
         for (int i = 0; i < flowerbed.length; i++) {
             if (flowerbed[i] == 0) {

@@ -8,4 +8,12 @@ public class Util {
         }
         return res + "]";
     }
+
+    public static String array2String(char[] array) {
+        StringBuilder res = new StringBuilder("[");
+        for (char i : array) {
+            res.append(i).append(",");
+        }
+        return res + "]";
+    }
 }

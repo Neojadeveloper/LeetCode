@@ -75,33 +75,100 @@ public class LeetCode75 {
             if (vowels.contains(s.charAt(i))) {
                 cnt++;
             }
-            if (vowels.contains(s.charAt(i-k))) {
+            if (vowels.contains(s.charAt(i - k))) {
                 cnt--;
             }
             max = Math.max(max, cnt);
         }
         return max;
     }
+
     public int maxVowels2(String s, int k) {
         int maxCount = 0;
         int[] arr = new int[26];
-        arr['a' - 'a']=arr['e' -'a']=arr['i' -'a']=arr['o' - 'a']=arr['u' - 'a']=1;
-        for(int i=0; i<k; i++) {
+        arr['a' - 'a'] = arr['e' - 'a'] = arr['i' - 'a'] = arr['o' - 'a'] = arr['u' - 'a'] = 1;
+        for (int i = 0; i < k; i++) {
             char c = s.charAt(i);
             maxCount += arr[c - 'a'];
         }
 
         int curr = maxCount;
-        for (int i=k; i<s.length(); i++){
+        for (int i = k; i < s.length(); i++) {
             char c = s.charAt(i);
             curr += arr[c - 'a'];
-            curr -= arr[s.charAt(i-k) - 'a'];
+            curr -= arr[s.charAt(i - k) - 'a'];
             maxCount = Math.max(curr, maxCount);
         }
         return maxCount;
     }
 
+    public static int longestOnes(int[] nums, int k) {
+        HashMap<Integer, Integer> memo = new HashMap<>();
+        int max = 0;
+        int all = 0;
+        int one = 0;
+        int j = 0;
+        for (int num : nums) {
+            if (num == 1) {
+                all++;
+                one++;
+            }
+            if (num == 0) {
+                if (k > 0) {
+                    all -= memo.getOrDefault(j % k, 0);
+                    memo.put(j % k, one + 1);
+                    one = 0;
+                    j++;
+                    all++;
+                } else all = 0;
+            }
+            max = Math.max(max, all);
+        }
+        return max;
+    }
+
+    public static int longestOnes2(int[] nums, int k) {
+        int max = 0, start = 0;
+        for (int end = 0; end < nums.length; end++) {
+            k -= (1 - nums[end]);
+            if (k < 0) {
+                k += (1 - nums[start]);
+                start++;
+            } else max = Math.max(end - start + 1, max);
+        }
+        return max;
+    }
+
+    public int longestSubarray(int[] nums) {
+        int max = 0, start = 0, k = 1;
+        for (int end = 0; end < nums.length; end++) {
+            k -= (1 - nums[end]);
+            if (k < 0) {
+                k += (1 - nums[start]);
+                start++;
+            } else max = Math.max(end - start + 1, max) - 1;
+        }
+        return max;
+    }
+
+    public int longestSubarray2(int[] nums) {
+        int curr = 0, prev = 0, ans = 0, zeros = 0;
+        for (int n : nums) {
+            if (n == 0) {
+                zeros++;
+                ans = Math.max(ans, curr + prev);
+                prev = curr;
+                curr = 0;
+            } else {
+                curr++;
+            }
+        }
+        ans = Math.max(ans, curr + prev);
+        return (zeros == 0) ? ans - 1 : ans;
+
+    }
+
     public static void main(String[] args) {
-        System.out.println(findMaxAverage(new int[]{0, 4, 0, 3, 2}, 1));
+        System.out.println(longestOnes2(new int[]{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
     }
 }

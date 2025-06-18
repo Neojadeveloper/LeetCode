@@ -1,10 +1,8 @@
 package leetCode75;
 
 import javax.print.DocFlavor;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.lang.classfile.instruction.NewMultiArrayInstruction;
+import java.util.*;
 
 public class LeetCode75 {
     public int maxOperations(int[] nums, int k) {
@@ -168,7 +166,190 @@ public class LeetCode75 {
 
     }
 
+    public List<List<Integer>> findDifference(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        for (int i : nums1) {
+            set1.add(i);
+        }
+        for (int i : nums2) {
+            set2.add(i);
+        }
+        for (int i : nums1) {
+            set2.remove(i);
+        }
+        for (int i : nums2) {
+            set1.remove(i);
+        }
+        List<List<Integer>> r = new ArrayList<>();
+        r.add(new ArrayList<>(set1));
+        r.add(new ArrayList<>(set2));
+        return r;
+    }
+
+    public static boolean uniqueOccurrences(int[] arr) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
+        for (int i : arr) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+        for (Integer value : map.values()) {
+            int orDefault = map2.getOrDefault(value, 0) + 1;
+            if (orDefault == 2) return false;
+            map2.put(value, orDefault);
+        }
+        return true;
+    }
+
+    public static boolean uniqueOccurrences2(int[] arr) {
+        int[] first = new int[2001];
+        for (int i : arr) {
+            first[i + 1000]++;
+        }
+        boolean[] second = new boolean[1001];
+        for (int i : arr) {
+            int j = first[i + 1000];
+            first[i + 1000] = 0;
+            if (j > 0 && second[j]) return false;
+            second[j] = true;
+        }
+        return true;
+    }
+
+    public boolean closeStrings(String word1, String word2) {
+        if (word1.length() != word2.length()) return false;
+
+        int[] freq1 = new int[26];
+        int[] freq2 = new int[26];
+        Set<Character> set1 = new HashSet<>();
+        Set<Character> set2 = new HashSet<>();
+
+        for (char c : word1.toCharArray()) {
+            freq1[c - 'a']++;
+            set1.add(c);
+        }
+
+        for (char c : word2.toCharArray()) {
+            freq2[c - 'a']++;
+            set2.add(c);
+        }
+
+        if (!set1.equals(set2)) return false;
+
+        Arrays.sort(freq1);
+        Arrays.sort(freq2);
+
+        return Arrays.equals(freq1, freq2);
+    }
+
+    public boolean closeStrings2(String word1, String word2) {
+        if (word1.length() != word2.length()) return false;
+        if (word2.equals(word1)) return true;
+
+
+        int[] freq1 = new int['z' + 1];
+        int[] freq2 = new int['z' + 1];
+
+        for (char c : word1.toCharArray()) {
+            freq1[c]++;
+        }
+
+        for (char c : word2.toCharArray()) {
+            freq2[c]++;
+        }
+        int maxFreq = 0;
+        for (int i = 'a'; i <= 'z'; i++) {
+            maxFreq = Math.max(maxFreq, Math.max(freq1[i], freq2[i]));
+        }
+        byte[] freqCounter = new byte[maxFreq + 1];
+        int unmatchedCount = 0;
+        for (int i = 'a'; i <= 'z'; i++) {
+            int f1 = freq1[i];//2
+            int f2 = freq2[i];//3
+            if ((f1 == 0) ^ (f2 == 0)) return false;
+            if (f1 != 0) {
+                int countBeforeF1 = freqCounter[f1]++;
+                int countBeforeF2 = freqCounter[f2]--;
+
+                if (countBeforeF1 == 0) unmatchedCount++;
+                else if (countBeforeF1 == -1) unmatchedCount--;
+
+                if (countBeforeF2 == 0) unmatchedCount++;
+                else if (countBeforeF2 == 1) unmatchedCount--;
+            }
+        }
+
+        return unmatchedCount == 0;
+    }
+
+    public int equalPairs(int[][] grid) {
+        int n = grid.length;
+        Map<String, Integer> rowMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < n; j++) {
+                sb.append(grid[i][j]).append(",");
+            }
+            rowMap.put(sb.toString(), rowMap.getOrDefault(sb.toString(), 0) + 1);
+        }
+
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                sb.append(grid[i][j]).append(",");
+            }
+            count += rowMap.getOrDefault(sb.toString(), 0);
+        }
+        return count;
+    }
+
+    public int equalPairs2(int[][] grid) {
+        int n = grid.length;
+        Map<List<Integer>, Integer> rowMap = new HashMap<>();
+        for (int[] ints : grid) {
+            List<Integer> rowList = new ArrayList<>();
+            for (int i : ints) {
+                rowList.add(i);
+            }
+            rowMap.put(rowList, rowMap.getOrDefault(rowList, 0) + 1);
+        }
+
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            List<Integer> col = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                col.add(grid[i][j]);
+            }
+            count += rowMap.getOrDefault(col, 0);
+        }
+        return count;
+    }
+
+    public String removeStars(String s) {
+        Stack<Character> chars = new Stack<>();
+        StringBuilder result = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c == '*') chars.pop();
+            else chars.add(c);
+
+        }
+        for (Character aChar : chars) {
+            result.append(aChar);
+        }
+        return result.toString();
+    }
+    public String removeStars2(String s) {
+        char[] charArray = s.toCharArray();
+        int i = 0;
+        for (char c : charArray) {
+            if (c == '*') i--;
+            else charArray[i++] = c;
+        }
+        return new String(charArray, 0, i);
+    }
+
     public static void main(String[] args) {
-        System.out.println(longestOnes2(new int[]{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
+        System.out.println(uniqueOccurrences(new int[]{1, 2}));
     }
 }

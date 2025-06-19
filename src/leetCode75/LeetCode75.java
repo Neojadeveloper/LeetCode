@@ -1,7 +1,5 @@
 package leetCode75;
 
-import javax.print.DocFlavor;
-import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.*;
 
 public class LeetCode75 {
@@ -339,6 +337,7 @@ public class LeetCode75 {
         }
         return result.toString();
     }
+
     public String removeStars2(String s) {
         char[] charArray = s.toCharArray();
         int i = 0;
@@ -349,7 +348,58 @@ public class LeetCode75 {
         return new String(charArray, 0, i);
     }
 
+    public static int[] asteroidCollision(int[] asteroids) {
+        int w = -1;
+        for (int i = 0; i < asteroids.length; i++) {
+            boolean destroyed = false;
+            if (asteroids[i] > 0) asteroids[++w] = asteroids[i];
+            else {
+                while (w >= 0 && asteroids[w] > 0) {
+                    if (asteroids[w] < -asteroids[i]) w--;
+                    else if (asteroids[w] == -asteroids[i]) {
+                        w--;
+                        destroyed = true;
+                        break;
+                    } else {
+                        destroyed = true;
+                        break;
+                    }
+                }
+                if (!destroyed) asteroids[++w] = asteroids[i];
+            }
+        }
+        return Arrays.copyOfRange(asteroids, 0, w + 1);
+    }
+
+    public static int[] asteroidCollision2(int[] asteroids) {
+        Stack<Integer> stack = new Stack<>();
+        for (int asteroid : asteroids) {
+            boolean destroyed = false;
+            while (!stack.isEmpty() && asteroid < 0 && stack.peek() > 0) {
+                if (stack.peek() < -asteroid) {
+                    stack.pop();
+                } else if (stack.peek() == -asteroid) {
+                    stack.pop();
+                    destroyed = true;
+                    break;
+                } else {
+                    destroyed = true;
+                    break;
+                }
+            }
+            if (!destroyed) {
+                stack.push(asteroid);
+            }
+        }
+        int s = stack.size();
+        int[] res = new int[s];
+        for (int i = s - 1; i >= 0; i--) {
+            res[i] = stack.pop();
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
-        System.out.println(uniqueOccurrences(new int[]{1, 2}));
+        System.out.println(asteroidCollision(new int[]{5, 10, -5}));
     }
 }

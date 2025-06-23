@@ -399,7 +399,33 @@ public class LeetCode75 {
         return res;
     }
 
+    public static String decodeString(String s) {
+        Stack<Integer> counts = new Stack<>();
+        Stack<StringBuilder> result = new Stack<>();
+        StringBuilder current = new StringBuilder();
+        int num = 0;
+
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0');
+            } else if (c == '[') {
+                counts.push(num);
+                result.push(current);
+                current = new StringBuilder();
+                num = 0;
+            } else if (c == ']') {
+                StringBuilder temp = current;
+                current = result.pop();
+                int count = counts.pop();
+                current.append(String.valueOf(temp).repeat(Math.max(0, count)));
+            } else {
+                current.append(c);
+            }
+        }
+        return current.toString();
+    }
+
     public static void main(String[] args) {
-        System.out.println(asteroidCollision(new int[]{5, 10, -5}));
+        System.out.println(decodeString("3[a2[c]]"));
     }
 }

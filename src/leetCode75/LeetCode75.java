@@ -1,5 +1,6 @@
 package leetCode75;
 
+
 import java.util.*;
 
 public class LeetCode75 {
@@ -458,7 +459,121 @@ public class LeetCode75 {
         return radiant.isEmpty() ? "Dire" : "Radiant";
     }
 
+    public static class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode() {
+        }
+
+        ListNode(int val) {
+            this.val = val;
+        }
+
+        ListNode(int val, ListNode next) {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
+    public static ListNode deleteMiddle(ListNode head) {
+        if (head == null || head.next == null) return null;
+
+        ListNode slow = head, fast = head, prev = null;
+
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        prev.next = slow.next; // Remove the middle node
+
+        return head;
+    }
+
+    public static ListNode oddEvenList(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        ListNode odd = head, even = head.next, evenHead = even;
+
+        while (even != null && even.next != null) {
+            odd.next = odd.next.next; // Link odd nodes
+            even.next = even.next.next; // Link even nodes
+            odd = odd.next; // Move to next odd node
+            even = even.next; // Move to next even node
+        }
+
+        odd.next = evenHead; // Connect the end of odd list to the head of even list
+
+        return head;
+    }
+
+    public ListNode reverseList(ListNode head) {
+        ListNode reverse = null, curr;
+        while (head != null) {
+            curr = head;
+            head = head.next;
+            reverse = new ListNode(curr.val, reverse);
+        }
+        return reverse;
+    }
+
+    public static int pairSum(ListNode head) {
+        int max = 0;
+        int i = 0;
+        Stack<Integer> stack = new Stack<>();
+        ListNode current = head;
+        while (current != null) {
+            stack.push(current.val);
+            current = current.next;
+            i++;
+        }
+        for (int j = 0; j < i / 2; j++) {
+            max = Math.max(max, head.val + stack.pop());
+            head = head.next;
+        }
+
+        return max;
+    }
+
+    public static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return Math.max(left, right) + 1;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(decodeString("3[a2[c]]"));
+        int[] list = new int[]{1, 100000};
+        ListNode listNode = new ListNode();
+        listNode.val = 1;
+        ListNode current = listNode;
+        for (int i = 1; i < list.length; i++) {
+            current.next = new ListNode(list[i]);
+            current = current.next;
+        }
+
+        System.out.println(pairSum(listNode));
     }
 }

@@ -563,17 +563,96 @@ public class LeetCode75 {
         return Math.max(left, right) + 1;
     }
 
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        ArrayList<Integer> memo1 = new ArrayList<>();
+        ArrayList<Integer> memo2 = new ArrayList<>();
+        leafSimilar(root1, memo1);
+        leafSimilar(root2, memo2);
+        int size1 = memo1.size();
+        int size2 = memo2.size();
+        if (size1 != size2) return false;
+        for (int i = 0; i < size2; i++) {
+            if (!Objects.equals(memo2.get(i), memo1.get(i))) return false;
+        }
+        return true;
+    }
+
+    public void leafSimilar(TreeNode root, ArrayList<Integer> memo) {
+        if (root.left == null && root.right == null) {
+            memo.add(root.val);
+            return;
+        }
+        if (root.left != null) leafSimilar(root.left, memo);
+        if (root.right != null) leafSimilar(root.right, memo);
+    }
+
+    public static class TreeBuilder {
+        public static TreeNode buildTree(Integer[] arr) {
+            if (arr.length == 0 || arr[0] == null) return null;
+
+            TreeNode root = new TreeNode(arr[0]);
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            int i = 1;
+
+            while (i < arr.length) {
+                TreeNode current = queue.poll();
+                if (arr[i] != null) {
+                    assert current != null;
+                    current.left = new TreeNode(arr[i]);
+                    queue.offer(current.left);
+                }
+                i++;
+                if (i < arr.length && arr[i] != null) {
+                    assert current != null;
+                    current.right = new TreeNode(arr[i]);
+                    queue.offer(current.right);
+                }
+                i++;
+            }
+            return root;
+        }
+    }
+
+    public static int goodNodes(TreeNode root) {
+        return goodNodes(root, root.val);
+    }
+
+    private static int goodNodes(TreeNode root, int top) {
+        if (root == null) return 0;
+
+        int val = root.val;
+        int count = 0;
+        if (val >= top) {
+            count++;
+        }
+        top = Math.max(top, val);
+        count += goodNodes(root.left, top);
+        count += goodNodes(root.right, top);
+        return count;
+    }
+
+    public static int pathSum(TreeNode root, int targetSum) {
+        return pathSum(root, targetSum, new HashMap<>(), 0);
+    }
+
+    private static int pathSum(TreeNode root, int targetSum, HashMap<Long, Integer> map, long sum) {
+        if (root == null) return 0;
+        int count = 0;
+        sum += root.val;
+        if (sum == targetSum) count++;
+        count += map.getOrDefault(sum - targetSum, 0);
+        map.put(sum, map.getOrDefault(sum, 0) + 1);
+        count += pathSum(root.left, targetSum, map, sum);
+        count += pathSum(root.right, targetSum, map, sum);
+        map.put(sum, map.get(sum) - 1);
+        return count;
+    }
+
 
     public static void main(String[] args) {
-        int[] list = new int[]{1, 100000};
-        ListNode listNode = new ListNode();
-        listNode.val = 1;
-        ListNode current = listNode;
-        for (int i = 1; i < list.length; i++) {
-            current.next = new ListNode(list[i]);
-            current = current.next;
-        }
-
-        System.out.println(pairSum(listNode));
+        Integer[] input = {10, 5, -3, 3, 2, null, 11, 3, -2, null, 1};
+        TreeNode root = TreeBuilder.buildTree(input);
+        System.out.println(pathSum(root, 8));
     }
 }

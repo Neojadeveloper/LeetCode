@@ -649,10 +649,29 @@ public class LeetCode75 {
         return count;
     }
 
+    public static int max = 0;
+
+    public static int longestZigZag(TreeNode root) {
+        longestZigZag(root.right, 1, true);
+        longestZigZag(root.left, 1, false);
+        return max;
+    }
+
+    public static void longestZigZag(TreeNode root, int length, boolean isLeft) {
+        if (root == null) return;
+        max = Math.max(max, length);
+        if (isLeft) {
+            longestZigZag(root.right, length + 1, false);
+            longestZigZag(root.left, 1, true);
+        } else {
+            longestZigZag(root.left, length + 1, true);
+            longestZigZag(root.right, 1, false);
+        }
+    }
 
     public static void main(String[] args) {
-        Integer[] input = {10, 5, -3, 3, 2, null, 11, 3, -2, null, 1};
+        Integer[] input = {1, null, 1, 1, 1, null, null, 1, 1, null, 1, null, null, null, 1};
         TreeNode root = TreeBuilder.buildTree(input);
-        System.out.println(pathSum(root, 8));
+        System.out.println(longestZigZag(root));
     }
 }
